@@ -3,4 +3,4 @@ FPGA-based FM software-defined radio receiver with a custom analogue front end a
 
 ## Analogue Front End
 
-![Analogue front-end block diagram](images/analogue_front_end.png)
+![Analogue front-end block diagram](images/analogue_frontend_diagram.png)
