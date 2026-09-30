@@ -65,7 +65,9 @@ A custom LC band-pass filter was designed to pass the **87.5–108 MHz FM broadc
 
 The filter was constructed using discrete components on copper-clad board and characterised using a NanoVNA.
 
-![Physical FM band-pass filter](images/fm_bpf_hardware.png)
+<p align="center">
+  <img src="images/fm_bpf_hardware.png" width="500">
+</p>
 
 A high-resolution S21 sweep around the FM band shows that the desired passband is achieved with relatively low insertion loss across most of the band.
 
