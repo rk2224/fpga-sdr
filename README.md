@@ -53,12 +53,51 @@ The recovered audio is converted to a PWM signal for output to an external analo
 - Dipole antenna
 - PWM audio output stage
 - Audio amplifier and speaker
+- NanoVNA
+- Oscilloscope
+- Digital multimeter
 
-Test equipment used during development included:
- -NanoVNA
- -Oscilloscope
- -Digital multimeter
+## RF Filter Characterisation
 
+### FM Band-Pass Filter
+
+A custom LC band-pass filter was designed to pass the **87.5–108 MHz FM broadcast band** while attenuating unwanted out-of-band signals before amplification and mixing.
+
+The filter was constructed using discrete components on copper-clad board and characterised using a NanoVNA.
+
+![Physical FM band-pass filter](images/fm_bpf_hardware.jpg)
+
+A high-resolution S21 sweep around the FM band shows that the desired passband is achieved with relatively low insertion loss across most of the band.
+
+![FM band-pass filter passband](images/fm_bpf_passband.png)
+
+A wider frequency sweep revealed additional unwanted resonances at higher frequencies. These are caused by practical non-idealities such as component parasitics, interconnect inductance and capacitance, and the physical construction of the discrete RF filter.
+
+![FM band-pass filter wideband response](images/fm_bpf_wideband.png)
+
+### Additional RF Low-Pass Filter
+
+To suppress the unwanted high-frequency responses observed in the wideband measurement, an additional RF low-pass filter was cascaded with the FM band-pass filter.
+
+The low-pass stage was designed to preserve the required FM broadcast band while providing substantially greater attenuation at higher frequencies.
+
+![Physical FM BPF and RF low-pass filter](images/fm_bpf_lpf_hardware.jpg)
+
+The comparison below shows the measured S21 response before and after adding the additional low-pass stage.
+
+![BPF versus BPF plus RF low-pass filter](images/fm_bpf_lpf_comparison.png)
+
+The combined filter response retains the desired **87.5–108 MHz** passband while significantly reducing the unwanted high-frequency resonances.
+
+This provided a cleaner RF spectrum to the following receiver stages and reduced the risk of unwanted out-of-band signals entering the mixer.
+
+### Post-Mixer Anti-Aliasing Filter
+
+A separate low-pass filter is used after the analogue mixer.
+
+With an **85 MHz local oscillator**, the 87.5–108 MHz FM broadcast band is translated to approximately **2.5–23 MHz**. The post-mixer filter therefore passes the desired intermediate-frequency band while suppressing higher-frequency mixer products and limiting the bandwidth presented to the ADC.
+
+This filter is separate from the RF low-pass filter used to suppress the high-frequency responses of the FM band-pass filter.
 
 ## Results
 
