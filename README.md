@@ -103,13 +103,17 @@ The combined filter response retains the desired **87.5–108 MHz** passband whi
 
 This provided a cleaner RF spectrum to the following receiver stages and reduced the risk of unwanted out-of-band signals entering the mixer.
 
-### Post-Mixer Anti-Aliasing Filter
+### Post-Mixer Low-Pass / Anti-Aliasing Filter
 
-A separate low-pass filter is used after the analogue mixer.
+After analogue mixing, the 87.5–108 MHz FM broadcast band is translated using an 85 MHz local oscillator to an intermediate-frequency range of approximately **2.5–23 MHz**.
 
-With an **85 MHz local oscillator**, the 87.5–108 MHz FM broadcast band is translated to approximately **2.5–23 MHz**. The post-mixer filter therefore passes the desired intermediate-frequency band while suppressing higher-frequency mixer products and limiting the bandwidth presented to the ADC.
+A low-pass filter was therefore placed between the mixer and the ADC to preserve the required IF spectrum while attenuating higher-frequency mixer products before digitisation.
 
-This filter is separate from the RF low-pass filter used to suppress the high-frequency responses of the FM band-pass filter.
+The measured S21 response shows a cutoff close to the upper edge of the desired IF band. At **23 MHz**, the filter is approximately at the edge of its passband, after which the attenuation increases rapidly. By the **32.5 MHz Nyquist frequency** of the 65 MS/s ADC, unwanted frequency components are already significantly attenuated, with substantially greater rejection at higher frequencies.
+
+![Measured post-mixer low-pass filter response](images/post_mixer_anti_aliasing_lpf.png)
+
+This filter therefore limits the bandwidth presented to the ADC and reduces the contribution of unwanted high-frequency mixer products and out-of-band signals that could otherwise alias into the sampled spectrum.
 
 ## Results
 
