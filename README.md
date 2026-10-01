@@ -36,35 +36,6 @@ The analogue chain consists of:
   
 ---
 
-## FPGA Digital Signal Processing Pipeline
-
-The digitised IF signal is processed entirely in real time on the FPGA.
-
-The signal is converted into complex I/Q samples using multiplication by a complex exponential, translating the spectrum into complex baseband. A tunable digital mixer is then used to select the desired FM station.
-
-The I and Q channels pass through two stages of FIR filtering and decimation to reduce the sample rate while isolating the selected FM channel. A CORDIC-based phase detector is then used to recover the FM-modulated audio signal.
-
-The recovered audio is converted to a PWM signal for output to an external analogue low-pass filter and audio amplifier before driving a speaker.
-
-![FPGA Digital Signal Processing Pipeline](images/FPGA_DSP_pipeline.png)
-
-## Hardware
-
-- Terasic DE10-Lite FPGA board
-- Intel MAX10 FPGA
-- AD9226 12-bit ADC
-- AD831 active mixer
-- Si5351 local oscillator
-- SPF5189Z LNA
-- Custom FM band-pass filter
-- Custom post-mixer low-pass filter
-- Dipole antenna
-- PWM audio output stage
-- Audio amplifier and speaker
-- NanoVNA H4
-- Oscilloscope (100kHz bandwidth)
-- Digital multimeter
-
 ## RF Filter Characterisation
 
 ### FM Band-Pass Filter
@@ -104,12 +75,15 @@ The low-pass stage was designed to preserve the required FM broadcast band while
 The cascaded filter network was characterised directly using a NanoVNA. The image below shows the measured response of the combined FM band-pass and RF low-pass filtering stages during testing.
 
 <p align="center">
-  <img src="images/vna_measure_bpf.jpeg" width="700">
+  <img src="images/vna_measure_bpf.jpeg" width="500">
 </p>
 
 The measured S21 data was then exported from the NanoVNA and plotted in MATLAB for clearer quantitative comparison.
 
 ![BPF versus BPF plus RF low-pass filter](images/fm_bpf_lpf_comparison.png)
+<p align="center">
+  <img src="images/fm_bpf_lpf_comparison.jpeg" width="500">
+</p>
 
 The combined filter response retains the desired **87.5–108 MHz** passband while significantly reducing the unwanted high-frequency resonances.
 
@@ -130,6 +104,65 @@ The measured S21 response shows a cutoff close to the upper edge of the desired 
 ![Measured post-mixer low-pass filter response](images/post_mixer_anti_aliasing_lpf.png)
 
 This filter therefore limits the bandwidth presented to the ADC and reduces the contribution of unwanted high-frequency mixer products and out-of-band signals that could otherwise alias into the sampled spectrum.
+
+### FPGA Digital Signal Processing Pipeline
+
+## ADC Interface and Clocking
+
+The AD9226 provides a 12-bit parallel sample stream to the FPGA and is clocked at 65 MHz using an FPGA PLL. Since the highest frequency component after analogue filtering is approximately 23 MHz, the Nyquist–Shannon sampling theorem requires a sampling rate greater than 46 MS/s. Although the DE10-Lite’s 50 MHz reference clock would theoretically satisfy this, the ADC was operated at 65 MS/s to provide additional sampling margin.
+
+## Digital Downconversion to IQ samples
+
+The sampled signal contains the complete FM broadcast spectrum translated to approximately 2.5–23 MHz. To shift this spectrum to complex baseband, the ADC samples are multiplied by a 12.75 MHz complex exponential.
+
+This complex exponential is generated using a numerically controlled oscillator (NCO), implemented with a phase accumulator and a ROM storing sine values. The NCO produces the corresponding sine and cosine components, which are multiplied by the real ADC samples to generate the in-phase (I) and quadrature (Q) signals.
+
+## Digital Station Tuning
+
+Individual FM stations are selected digitally rather than by changing the analogue local oscillator.
+
+A second tunable NCO generates a complex exponential corresponding to the frequency offset of the desired station. Complex multiplication translates the selected FM channel to approximately 0 Hz.
+
+Changing the NCO phase increment therefore changes the tuned station while the analogue RF front end and 85 MHz local oscillator remain fixed.
+
+This allows tuning across the FM broadcast band entirely within the FPGA.
+
+## FIR filtering and decimation
+
+After frequency translation, the I and Q streams pass through multiple FIR filtering stages. The first filter removes unwanted channels and limits the bandwidth before decimation, allowing the sample rate to be reduced while retaining only the selected FM channel around baseband.
+
+A second FIR stage then provides sharper channel filtering at the reduced sample rate before FM demodulation. Performing this filtering after decimation allows the required frequency response to be achieved with far fewer FIR coefficients, significantly reducing FPGA resource usage.
+
+The recovered audio is converted to a PWM signal for output to an external analogue low-pass filter and audio amplifier before driving a speaker.
+
+## CORDIC FM demodulation
+
+FM information is encoded in the phase variation of the complex baseband signal. Demodulation is performed by calculating the phase difference between successive samples as
+
+\[
+\arg\left(x[n]x^*[n-1]\right)
+\]
+
+A CORDIC algorithm efficiently computes this argument using only shifts and additions, recovering the FM-modulated audio signal without requiring a hardware arctangent.
+
+![FPGA Digital Signal Processing Pipeline](images/FPGA_DSP_pipeline.png)
+
+## Hardware
+
+- Terasic DE10-Lite FPGA board
+- Intel MAX10 FPGA
+- AD9226 12-bit ADC
+- AD831 active mixer
+- Si5351 local oscillator
+- SPF5189Z LNA
+- Custom FM band-pass filter
+- Custom post-mixer low-pass filter
+- Dipole antenna
+- PWM audio output stage
+- Audio amplifier and speaker
+- NanoVNA H4
+- Oscilloscope (100kHz bandwidth)
+- Digital multimeter
 
 ## Results
 
