@@ -6,6 +6,14 @@ The receiver covers the commercial **87.5–108 MHz FM broadcast band**, perform
 
 The completed system successfully receives multiple live FM radio stations and outputs demodulated audio through a PWM-based audio stage.
 
+## Demo
+
+### Live FM Reception
+
+The video below demonstrates real-time frequency selection across the FM broadcast band and reception of multiple live stations.
+
+[▶ Watch the live FM reception demo](https://www.youtube.com/watch?v=UVz3SpmBF10)
+
 ## Analogue Front End
 
 ![Analogue front-end block diagram](images/analogue_frontend_diagram.png)
