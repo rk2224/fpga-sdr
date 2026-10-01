@@ -2,7 +2,7 @@
 
 FPGA-based FM software-defined radio receiver with a custom analogue front end and real-time DSP implemented on an Intel MAX10 FPGA.
 
-The receiver covers the commercial FM broadcast band and performs channel selection and FM demodulation digitally on an Intel MAX10 FPGA. The analogue front end performs RF filtering, amplification and downconversion before digitisation by an external ADC.
+The receiver covers the commercial **87.5–108 MHz FM broadcast band**, performs analogue RF downconversion and digitisation, and then carries out station selection, filtering and FM demodulation digitally on the FPGA.
 
 The completed system successfully receives multiple live FM radio stations and outputs demodulated audio through a PWM-based audio stage.
 
@@ -53,8 +53,8 @@ The recovered audio is converted to a PWM signal for output to an external analo
 - Dipole antenna
 - PWM audio output stage
 - Audio amplifier and speaker
-- NanoVNA
-- Oscilloscope
+- NanoVNA H4
+- Oscilloscope (100kHz bandwidth)
 - Digital multimeter
 
 ## RF Filter Characterisation
@@ -63,7 +63,7 @@ The recovered audio is converted to a PWM signal for output to an external analo
 
 A custom LC band-pass filter was designed to pass the **87.5–108 MHz FM broadcast band** while attenuating unwanted out-of-band signals before amplification and mixing.
 
-The filter was constructed using discrete components on copper-clad board and characterised using a NanoVNA.
+The filter was constructed using Manhattan-style construction with discrete components mounted on copper-clad board and was characterised using a NanoVNA.
 
 <p align="center">
   <img src="images/fm_bpf_hardware.png" width="500">
@@ -71,7 +71,9 @@ The filter was constructed using discrete components on copper-clad board and ch
 
 A high-resolution S21 sweep around the FM band shows that the desired passband is achieved with relatively low insertion loss across most of the band.
 
-![FM band-pass filter passband](images/fm_bpf_passband.png)
+<p align="center">
+  <img src="images/fm_bpf_passband.png" width="250">
+</p>
 
 A wider frequency sweep revealed additional unwanted resonances at higher frequencies. These are caused by practical non-idealities such as component parasitics, interconnect inductance and capacitance, and the physical construction of the discrete RF filter.
 
