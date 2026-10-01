@@ -72,7 +72,7 @@ The filter was constructed using Manhattan-style construction with discrete comp
 A high-resolution S21 sweep around the FM band shows that the desired passband is achieved with relatively low insertion loss across most of the band.
 
 <p align="center">
-  <img src="images/fm_bpf_passband.png" width="500">
+  <img src="images/fm_bpf_passband.png" width="700">
 </p>
 
 A wider frequency sweep revealed additional unwanted resonances at higher frequencies. These are caused by practical non-idealities such as component parasitics, interconnect inductance and capacitance, and the physical construction of the discrete RF filter.
