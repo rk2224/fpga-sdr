@@ -69,7 +69,11 @@ The recovered audio is converted to a PWM signal for output to an external analo
 
 ### FM Band-Pass Filter
 
-A custom LC band-pass filter was designed to pass the **87.5–108 MHz FM broadcast band** while attenuating unwanted out-of-band signals before amplification and mixing.
+A custom LC band-pass filter was designed to pass the **87.5–108 MHz FM broadcast band** while attenuating unwanted out-of-band signals before amplification and mixing. The schematic of the circuit used is shown below.
+
+<p align="center">
+  <img src="images/fm_bpf_schematic.png" width="500">
+</p>
 
 The filter was constructed using Manhattan-style construction with discrete components mounted on copper-clad board and was characterised using a NanoVNA.
 
@@ -113,9 +117,13 @@ This provided a cleaner RF spectrum to the following receiver stages and reduced
 
 ### Post-Mixer Low-Pass / Anti-Aliasing Filter
 
-After analogue mixing, the 87.5–108 MHz FM broadcast band is translated using an 85 MHz local oscillator to an intermediate-frequency range of approximately **2.5–23 MHz**.
+After analogue mixing, the 87.5–108 MHz FM broadcast band is translated using an 85 MHz local oscillator to an intermediate-frequency range of approximately **2.5–23 MHz**. 
 
-A low-pass filter was therefore placed between the mixer and the ADC to preserve the required IF spectrum while attenuating higher-frequency mixer products before digitisation.
+A low-pass filter was therefore placed between the mixer and the ADC to preserve the required IF spectrum while attenuating higher-frequency mixer products before digitisation. The circuit schematic is shown below.
+
+<p align="center">
+  <img src="images/fm_lp_schematic.png" width="500">
+</p>
 
 The measured S21 response shows a cutoff close to the upper edge of the desired IF band. At **23 MHz**, the filter is approximately at the edge of its passband, after which the attenuation increases rapidly. By the **32.5 MHz Nyquist frequency** of the 65 MS/s ADC, unwanted frequency components are already significantly attenuated, with substantially greater rejection at higher frequencies.
 
