@@ -100,7 +100,7 @@ The low-pass stage was designed to preserve the required FM broadcast band while
 The cascaded filter network was characterised directly using a NanoVNA. The image below shows the measured response of the combined FM band-pass and RF low-pass filtering stages during testing.
 
 <p align="center">
-  <img src="images/vna_bpf_lpf_measurement.jpeg" width="700">
+  <img src="images/vna_measure_bpf.jpeg" width="700">
 </p>
 
 The measured S21 data was then exported from the NanoVNA and plotted in MATLAB for clearer quantitative comparison.
