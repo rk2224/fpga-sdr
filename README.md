@@ -93,9 +93,17 @@ To suppress the unwanted high-frequency responses observed in the wideband measu
 
 The low-pass stage was designed to preserve the required FM broadcast band while providing substantially greater attenuation at higher frequencies.
 
-![Physical FM BPF and RF low-pass filter](images/fm_bpf_lpf_hardware.jpeg)
+<p align="center">
+  <img src="images/fm_bpf_lpf_hardware.jpeg" width="600">
+</p>
 
-The comparison below shows the measured S21 response before and after adding the additional low-pass stage.
+The cascaded filter network was characterised directly using a NanoVNA. The image below shows the measured response of the combined FM band-pass and RF low-pass filtering stages during testing.
+
+<p align="center">
+  <img src="images/vna_bpf_lpf_measurement.jpeg" width="700">
+</p>
+
+The measured S21 data was then exported from the NanoVNA and plotted in MATLAB for clearer quantitative comparison.
 
 ![BPF versus BPF plus RF low-pass filter](images/fm_bpf_lpf_comparison.png)
 
