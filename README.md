@@ -82,9 +82,8 @@ The cascaded filter network was characterised directly using a NanoVNA. The imag
 
 The measured S21 data was then exported from the NanoVNA and plotted in MATLAB for clearer quantitative comparison.
 
-![BPF versus BPF plus RF low-pass filter](images/fm_bpf_lpf_comparison.png)
 <p align="center">
-  <img src="images/fm_bpf_lpf_comparison.jpeg" width="200">
+  <img src="images/fm_bpf_lpf_comparison.png" width="700">
 </p>
 
 The combined filter response retains the desired **87.5–108 MHz** passband while significantly reducing the unwanted high-frequency resonances.
@@ -111,13 +110,13 @@ This filter therefore limits the bandwidth presented to the ADC and reduces the 
 
 ### ADC Interface and Clocking
 
-The AD9226 provides a 12-bit parallel sample stream to the FPGA and is clocked at 65 MHz using an FPGA PLL. Since the highest frequency component after analogue filtering is approximately 23 MHz, the Nyquist–Shannon sampling theorem requires a sampling rate greater than 46 MS/s. Although the DE10-Lite’s 50 MHz reference clock would theoretically satisfy this, the ADC was operated at 65 MS/s to provide additional sampling margin.
+The AD9226 provides a 12-bit parallel sample stream to the FPGA and is clocked at 65 MHz using an FPGA PLL. Since the highest frequency component after analogue filtering is approximately 23 MHz, the Nyquist–Shannon sampling theorem requires a sampling rate greater than 46 MS/s. Although the DE10-Lite’s 50 MHz reference clock would theoretically satisfy this, the ADC was operated at 65 MS/s to provide additional sampling margin and a wider transition band for the analogue anti-aliasing filter, reducing the required filter sharpness.
 
 ### ADC Spectrum
 
 The figure below shows the frequency spectrum of the digitised ADC samples after the analogue front end. The expected downconverted FM signals are visible within the approximately 2.5–23 MHz IF band, confirming that the ADC interface was operating correctly and that valid sampled data was being captured by the FPGA.
 
-![Measured post-mixer low-pass filter response](images/adc_spectrum_1.png)
+![ADC Spectrum](images/adc_spectrum_1.png)
 
 The spectrum also demonstrates the effect of the analogue front end, with the received FM band confined largely to the intended frequency range and out-of-band components attenuated by the RF and anti-aliasing filters.
 
@@ -163,12 +162,13 @@ The complete digital receiver was verified in Questa using synthetic 12-bit ADC 
 
 The recovered waveform closely matched the original message signal, providing end-to-end verification of the FPGA DSP pipeline.
 
-![FPGA Digital Signal Processing Pipeline](images/rtl_verification.png)
+![RTL Verification](images/rtl_verification.png)
 
 ## Hardware
 
-- Terasic DE10-Lite FPGA board
-- Intel MAX10 FPGA
+### Receiver Hardware
+
+- Terasic DE10-Lite development board (Intel MAX 10 FPGA)
 - AD9226 12-bit ADC
 - AD831 active mixer
 - Si5351 local oscillator
@@ -178,8 +178,11 @@ The recovered waveform closely matched the original message signal, providing en
 - Dipole antenna
 - PWM audio output stage
 - Audio amplifier and speaker
-- NanoVNA H4
-- Oscilloscope (100kHz bandwidth)
+
+### Test Equipment
+
+- NanoVNA H4 vector network analyser
+- Oscilloscope
 - Digital multimeter
 
 ## Results
