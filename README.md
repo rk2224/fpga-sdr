@@ -14,6 +14,19 @@ The video below demonstrates real-time frequency selection across the FM broadca
 
 [▶ Watch the live FM reception demo](https://www.youtube.com/watch?v=UVz3SpmBF10)
 
+## System Overview
+
+<p align="center">
+  <img src="images/fpga_sdr_annotated.jpg" width="900">
+</p>
+
+The complete receiver combines a custom analogue RF front end, 65 MS/s ADC, Intel MAX 10 FPGA DSP chain and PWM audio output stage.
+
+The received FM spectrum is filtered, amplified, downconverted and digitised before being processed digitally on the FPGA for station selection, filtering and FM demodulation.
+
+**Signal path:**  
+Antenna → RF Filters → LNA → Mixer → Anti-Aliasing Filter → ADC → FPGA DSP → PWM Reconstruction Filter → Audio Amplifier → Speaker
+
 ## Analogue Front End
 
 ![Analogue front-end block diagram](images/analogue_frontend_diagram.png)
