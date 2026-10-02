@@ -41,7 +41,7 @@ The analogue chain consists of:
 
 - Dipole antenna
 - Custom FM band-pass filter
-- Low-noise amplifier
+- SPF5189Z low-noise amplifier
 - AD831 active mixer
 - 85 MHz local oscillator
 - Custom post-mixer low-pass / anti-aliasing filter
@@ -166,6 +166,8 @@ $$
 A CORDIC algorithm efficiently computes this argument using only shifts and additions, recovering the FM-modulated audio signal without requiring a hardware arctangent.
 
 The recovered audio is converted to a PWM signal for output to an external analogue low-pass filter and audio amplifier before driving a speaker.
+
+### FPGA block diagram 
 
 ![FPGA Digital Signal Processing Pipeline](images/FPGA_DSP_pipeline.png)
 
