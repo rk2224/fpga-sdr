@@ -82,7 +82,7 @@ The measured S21 data was then exported from the NanoVNA and plotted in MATLAB f
 
 ![BPF versus BPF plus RF low-pass filter](images/fm_bpf_lpf_comparison.png)
 <p align="center">
-  <img src="images/fm_bpf_lpf_comparison.jpeg" width="500">
+  <img src="images/fm_bpf_lpf_comparison.jpeg" width="350">
 </p>
 
 The combined filter response retains the desired **87.5–108 MHz** passband while significantly reducing the unwanted high-frequency resonances.
@@ -141,17 +141,17 @@ After frequency translation, the I and Q streams pass through multiple FIR filte
 
 A second FIR stage then provides sharper channel filtering at the reduced sample rate before FM demodulation. Performing this filtering after decimation allows the required frequency response to be achieved with far fewer FIR coefficients, significantly reducing FPGA resource usage.
 
-The recovered audio is converted to a PWM signal for output to an external analogue low-pass filter and audio amplifier before driving a speaker.
-
 ### CORDIC FM demodulation
 
 FM information is encoded in the phase variation of the complex baseband signal. Demodulation is performed by calculating the phase difference between successive samples as
 
-\[
-\arg\left(x[n]x^*[n-1]\right)
-\]
+$$
+arg\left(x[n]x^*[n-1]\right)
+$$
 
 A CORDIC algorithm efficiently computes this argument using only shifts and additions, recovering the FM-modulated audio signal without requiring a hardware arctangent.
+
+The recovered audio is converted to a PWM signal for output to an external analogue low-pass filter and audio amplifier before driving a speaker.
 
 ![FPGA Digital Signal Processing Pipeline](images/FPGA_DSP_pipeline.png)
 
