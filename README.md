@@ -71,7 +71,7 @@ To suppress the unwanted high-frequency responses observed in the wideband measu
 The low-pass stage was designed to preserve the required FM broadcast band while providing substantially greater attenuation at higher frequencies.
 
 <p align="center">
-  <img src="images/fm_bpf_lpf_hardware.jpeg" width="600">
+  <img src="images/fm_bpf_lpf_hardware.png" width="600">
 </p>
 
 The cascaded filter network was characterised directly using a NanoVNA. The image below shows the measured response of the combined FM band-pass and RF low-pass filtering stages during testing.
