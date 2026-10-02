@@ -111,6 +111,14 @@ This filter therefore limits the bandwidth presented to the ADC and reduces the 
 
 The AD9226 provides a 12-bit parallel sample stream to the FPGA and is clocked at 65 MHz using an FPGA PLL. Since the highest frequency component after analogue filtering is approximately 23 MHz, the Nyquist–Shannon sampling theorem requires a sampling rate greater than 46 MS/s. Although the DE10-Lite’s 50 MHz reference clock would theoretically satisfy this, the ADC was operated at 65 MS/s to provide additional sampling margin.
 
+### ADC Spectrum
+
+The figure below shows the frequency spectrum of the digitised ADC samples after the analogue front end. The expected downconverted FM signals are visible within the approximately 2.5–23 MHz IF band, confirming that the ADC interface was operating correctly and that valid sampled data was being captured by the FPGA.
+
+![Measured post-mixer low-pass filter response](images/adc_spectrum_1.png)
+
+The spectrum also demonstrates the effect of the analogue front end, with the received FM band confined largely to the intended frequency range and out-of-band components attenuated by the RF and anti-aliasing filters.
+
 ### Digital Downconversion to IQ samples
 
 The sampled signal contains the complete FM broadcast spectrum translated to approximately 2.5–23 MHz. To shift this spectrum to complex baseband, the ADC samples are multiplied by a 12.75 MHz complex exponential.
@@ -146,6 +154,14 @@ FM information is encoded in the phase variation of the complex baseband signal.
 A CORDIC algorithm efficiently computes this argument using only shifts and additions, recovering the FM-modulated audio signal without requiring a hardware arctangent.
 
 ![FPGA Digital Signal Processing Pipeline](images/FPGA_DSP_pipeline.png)
+
+### RTL Simulation and Verification
+
+The complete digital receiver was verified in Questa using synthetic 12-bit ADC samples representing an FM signal after analogue downconversion. Known sine waves were used as the message signal and passed through the full RTL chain, including digital tuning, FIR filtering, decimation and CORDIC FM demodulation.
+
+The recovered waveform closely matched the original message signal, providing end-to-end verification of the FPGA DSP pipeline.
+
+![FPGA Digital Signal Processing Pipeline](images/rtl_verification.png)
 
 ## Hardware
 
