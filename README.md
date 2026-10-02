@@ -105,19 +105,19 @@ The measured S21 response shows a cutoff close to the upper edge of the desired 
 
 This filter therefore limits the bandwidth presented to the ADC and reduces the contribution of unwanted high-frequency mixer products and out-of-band signals that could otherwise alias into the sampled spectrum.
 
-### FPGA Digital Signal Processing Pipeline
+## FPGA Digital Signal Processing Pipeline
 
-## ADC Interface and Clocking
+### ADC Interface and Clocking
 
 The AD9226 provides a 12-bit parallel sample stream to the FPGA and is clocked at 65 MHz using an FPGA PLL. Since the highest frequency component after analogue filtering is approximately 23 MHz, the Nyquist–Shannon sampling theorem requires a sampling rate greater than 46 MS/s. Although the DE10-Lite’s 50 MHz reference clock would theoretically satisfy this, the ADC was operated at 65 MS/s to provide additional sampling margin.
 
-## Digital Downconversion to IQ samples
+### Digital Downconversion to IQ samples
 
 The sampled signal contains the complete FM broadcast spectrum translated to approximately 2.5–23 MHz. To shift this spectrum to complex baseband, the ADC samples are multiplied by a 12.75 MHz complex exponential.
 
 This complex exponential is generated using a numerically controlled oscillator (NCO), implemented with a phase accumulator and a ROM storing sine values. The NCO produces the corresponding sine and cosine components, which are multiplied by the real ADC samples to generate the in-phase (I) and quadrature (Q) signals.
 
-## Digital Station Tuning
+### Digital Station Tuning
 
 Individual FM stations are selected digitally rather than by changing the analogue local oscillator.
 
@@ -127,7 +127,7 @@ Changing the NCO phase increment therefore changes the tuned station while the a
 
 This allows tuning across the FM broadcast band entirely within the FPGA.
 
-## FIR filtering and decimation
+### FIR filtering and decimation
 
 After frequency translation, the I and Q streams pass through multiple FIR filtering stages. The first filter removes unwanted channels and limits the bandwidth before decimation, allowing the sample rate to be reduced while retaining only the selected FM channel around baseband.
 
@@ -135,7 +135,7 @@ A second FIR stage then provides sharper channel filtering at the reduced sample
 
 The recovered audio is converted to a PWM signal for output to an external analogue low-pass filter and audio amplifier before driving a speaker.
 
-## CORDIC FM demodulation
+### CORDIC FM demodulation
 
 FM information is encoded in the phase variation of the complex baseband signal. Demodulation is performed by calculating the phase difference between successive samples as
 
