@@ -1,10 +1,9 @@
 # FPGA-SDR
+An FM software-defined radio receiver built from scratch, featuring a hand-built analogue RF front end feeding a **65 MS/s ADC**, with station tuning, filtering and FM demodulation performed in real time on an **Intel MAX 10 FPGA**. All digital signal processing is implemented in **SystemVerilog without vendor DSP IP**.
 
-FPGA-based FM software-defined radio receiver with a custom analogue front end and real-time DSP implemented on an Intel MAX10 FPGA.
+The receiver covers the commercial **87.5–108 MHz FM broadcast band**, using analogue RF downconversion before digitisation and FPGA-based station selection and demodulation.
 
-The receiver covers the commercial **87.5–108 MHz FM broadcast band**, performs analogue RF downconversion and digitisation, and then carries out station selection, filtering and FM demodulation digitally on the FPGA.
-
-The completed system successfully receives multiple live FM radio stations and outputs demodulated audio through a PWM-based audio stage.
+The completed system successfully receives multiple live FM radio stations and outputs demodulated audio through a **PWM-based audio stage**.
 
 ## Demo
 
@@ -27,20 +26,31 @@ The received FM spectrum is filtered, amplified, downconverted and digitised bef
 **Signal path:**  
 Antenna → RF Filters → LNA → Mixer → Anti-Aliasing Filter → ADC → FPGA DSP → PWM Reconstruction Filter → Audio Amplifier → Speaker
 
+## Results
+
+The completed receiver successfully receives approximately 10 FM broadcast stations at my test location.
+
+Strong stations produce clear and intelligible audio with very little background noise, while weaker stations exhibit increased noise due to lower received signal strength.
+
+The receiver was validated incrementally by testing the ADC interface, digital signal-processing stages, mixer frequency conversion and complete RF-to-audio signal chain.
+
 ## Analogue Front End
 
 ![Analogue front-end block diagram](images/analogue_frontend_diagram.png)
 
 The analogue front end receives the FM broadcast band using a dipole antenna before filtering and amplifying the signal.
 
+A custom FM band-pass filter and cascaded LP filter restrict the received spectrum to the 87.5–108 MHz broadcast band, attenuating out-of-band signals before they reach the LNA and mixer.
+
 An **85 MHz local oscillator** is used with an analogue mixer to translate the **87.5–108 MHz** RF spectrum to an intermediate-frequency range of approximately **2.5–23 MHz**.
 
-The resulting signal is low-pass filtered before being sampled by an **AD9226 12-bit ADC at 65 MS/s**.
+The resulting signal is low-pass filtered to remove high-frequency mixer sum products before being sampled by an **AD9226 12-bit ADC at 65 MS/s**.
 
 The analogue chain consists of:
 
 - Dipole antenna
 - Custom FM band-pass filter
+- Cascaded RF low-pass filter
 - SPF5189Z low-noise amplifier
 - AD831 active mixer
 - 85 MHz local oscillator
@@ -179,20 +189,38 @@ The recovered waveform closely matched the original message signal, providing en
 
 ![RTL Verification](images/rtl_verification.png)
 
+### FPGA Resource Utilisation
+
+The complete real-time DSP chain occupies a relatively small fraction of the
+MAX 10 FPGA resources:
+
+| Resource | Utilisation |
+|---|---:|
+| Logic elements | 14,985 / 49,760 (30%) |
+| Registers | 8,956 |
+| Memory bits | 41,960 / 1,677,312 (3%) |
+| Embedded 9-bit multipliers | 131 / 288 (45%) |
+| PLLs | 1 / 4 (25%) |
+
+The design therefore fits comfortably within the available FPGA resources,
+with the FIR filters and complex mixers accounting for much of the multiplier usage.
+
 ## Hardware
 
 ### Receiver Hardware
 
 - Terasic DE10-Lite development board (Intel MAX 10 FPGA)
-- AD9226 12-bit ADC
+- AD9226 12-bit 65MS/s ADC
 - AD831 active mixer
 - Si5351 local oscillator
+- Arduino Uno (configures the Si5351 over I²C)
 - SPF5189Z LNA
-- Custom FM band-pass filter
-- Custom post-mixer low-pass filter
-- Dipole antenna
-- PWM audio output stage
-- Audio amplifier and speaker
+- Custom FM band-pass filter and cascaded RF low-pass filter
+- Custom post-mixer anti-aliasing low-pass filter
+- Dipole antenna, connected via a long coax cable
+- PWM audio analogue low-pass filter
+- PAM8302A audio amplifier
+- Speaker
 
 ### Test Equipment
 
@@ -200,13 +228,31 @@ The recovered waveform closely matched the original message signal, providing en
 - Oscilloscope
 - Digital multimeter
 
-## Results
+## Key Design Decisions
 
-The completed receiver successfully receives approximately 10 FM broadcast stations at my test location.
+### Digital I/Q Generation
 
-Strong stations produce clear and intelligible audio with very little background noise, while weaker stations exhibit increased noise due to lower received signal strength.
+An analogue I/Q mixer was initially considered, but this would have required two ADC channels and duplicate analogue filtering.
 
-The receiver was validated incrementally by testing the ADC interface, digital signal-processing stages, mixer frequency conversion and complete RF-to-audio signal chain.
+Instead, a single real IF signal is digitised and I/Q samples are generated digitally on the FPGA, reducing hardware cost and complexity.
+
+### 65 MS/s ADC Clock
+
+The 23 MHz IF spectrum could theoretically be sampled at 50 MS/s, but this leaves only a small transition band before the 25 MHz Nyquist frequency.
+
+Using a 65 MHz ADC clock increases the Nyquist frequency to 32.5 MHz, giving the analogue anti-aliasing filter much more transition bandwidth.
+
+### Two-Stage FIR Filtering
+
+Rather than using one very sharp FIR filter at the full sample rate, filtering is split across two stages with decimation between them.
+
+This allows the second filter to operate at a lower sample rate, reducing the number of coefficients and FPGA resources required.
+
+### Multiplier-Efficient FIR Architecture
+
+The initial FIR implementation used many multipliers in parallel, resulting in high DSP resource usage.
+
+The filters were redesigned to reuse multipliers across multiple clock cycles, greatly reducing multiplier usage while maintaining real-time throughput.
 
 ## Implementation
 
