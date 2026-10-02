@@ -60,7 +60,9 @@ A high-resolution S21 sweep around the FM band shows that the desired passband i
 
 A wider frequency sweep revealed additional unwanted resonances at higher frequencies. These are caused by practical non-idealities such as component parasitics, interconnect inductance and capacitance, and the physical construction of the discrete RF filter.
 
-![FM band-pass filter wideband response](images/fm_bpf_wideband.png)
+<p align="center">
+  <img src="images/fm_bpf_wideband.png" width="700">
+</p>
 
 ### Additional RF Low-Pass Filter
 
@@ -82,7 +84,7 @@ The measured S21 data was then exported from the NanoVNA and plotted in MATLAB f
 
 ![BPF versus BPF plus RF low-pass filter](images/fm_bpf_lpf_comparison.png)
 <p align="center">
-  <img src="images/fm_bpf_lpf_comparison.jpeg" width="350">
+  <img src="images/fm_bpf_lpf_comparison.jpeg" width="200">
 </p>
 
 The combined filter response retains the desired **87.5–108 MHz** passband while significantly reducing the unwanted high-frequency resonances.
@@ -157,7 +159,7 @@ The recovered audio is converted to a PWM signal for output to an external analo
 
 ### RTL Simulation and Verification
 
-The complete digital receiver was verified in Questa using synthetic 12-bit ADC samples representing an FM signal after analogue downconversion. Known sine waves were used as the message signal and passed through the full RTL chain, including digital tuning, FIR filtering, decimation and CORDIC FM demodulation.
+The complete digital receiver was verified in Questa using synthetic 12-bit ADC samples representing an FM signal after analogue downconversion. Known sine waves were used as the message signal, with a small amount of noise added to better represent a realistic received signal. The samples were then passed through the full RTL chain, including digital tuning, FIR filtering, decimation and CORDIC FM demodulation.
 
 The recovered waveform closely matched the original message signal, providing end-to-end verification of the FPGA DSP pipeline.
 
