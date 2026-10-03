@@ -1,0 +1,148 @@
+`timescale 1ns/1ps
+
+module testbench;
+    
+
+    parameter NUM_SAMPLES = 130000;
+    logic clk;
+    logic rst;
+    logic en;
+    logic en2;
+    logic [26:0] freq;
+    logic [6:0] N;
+    logic signed [11:0] ADC_sample;
+    logic signed [11:0] ADC_memory [0:NUM_SAMPLES-1];
+    logic signed [11:0] I_sample;
+    logic signed [11:0] Q_sample;
+    logic signed [14:0] Mixer_Re;
+    logic signed [14:0] Mixer_Im;
+    logic signed [20:0] FIR1_Re;
+    logic signed [20:0] FIR1_Im;
+    logic signed [26:0] FIR2_Re;
+    logic signed [26:0] FIR2_Im;
+    logic signed [18:0] z_angle;
+    logic data_valid_re;
+    logic data_valid_im;
+    integer sample_index;
+    
+    IQdownconverter IQ_CONVERTER (
+      .clk(clk),
+      .rst(rst),
+      .signal(ADC_sample),
+      .I_sample(I_sample),
+      .Q_sample(Q_sample)
+    );
+    
+    mixer init_mixer(
+        .clk(clk),
+        .rst(rst),
+        .freq(freq),
+        .I_samples(I_sample),
+        .Q_samples(Q_sample),
+        .I_re(Mixer_Re),
+        .Q_im(Mixer_Im)
+    );
+    
+    FIR1 re_fir1(
+        .clk(clk),
+        .rst(rst),
+        .en(en),
+        .signal(Mixer_Re),
+        .filtered_signal(FIR1_Re)
+    );
+   
+    FIR1 im_fir1(
+        .clk(clk),
+        .rst(rst),
+        .en(en),
+        .signal(Mixer_Im),
+        .filtered_signal(FIR1_Im)
+    );
+   
+    FIR2 re_fir2(
+        .clk(clk),
+        .rst(rst),
+        .en(en),
+        .en2(en2),
+        .signal(FIR1_Re),
+        .data_valid(data_valid_re),
+        .filtered_signal(FIR2_Re)
+    );
+
+    FIR2 im_fir2(
+        .clk(clk),
+        .rst(rst),
+        .en(en),
+        .en2(en2),
+        .signal(FIR1_Im),
+        .data_valid(data_valid_im),
+        .filtered_signal(FIR2_Im)
+    );
+
+    CORDIC CORDICALGO(
+     .clk(clk),
+     .rst(rst),
+     .data_valid(data_valid_re),
+     .en(en2),
+     .re_signal(FIR2_Re),
+     .im_signal(FIR2_Im),
+     .z_angle(z_angle)
+    );
+
+   
+    clkdivider decimation5MHZ(
+     .clk(clk),
+     .rst(rst),
+     .N(8'd13),
+     .en(en) 
+    );
+    
+    clkdivider decimation500kHZ(
+     .clk(clk),
+     .rst(rst),
+     .N(8'd130),
+     .en(en2) 
+    );
+
+    initial begin
+       $readmemh("ADC_samples2.hex", ADC_memory);
+    end
+
+    initial begin
+        clk = 0;
+        forever #7.692307 clk = ~clk;
+    end
+
+    initial begin
+        rst = 1;
+        ADC_sample = '0;
+        sample_index = 0;
+  
+        freq = 27'd91_300_000;
+
+        #100;
+        rst = 0;
+
+        for (sample_index = 0;
+             sample_index < NUM_SAMPLES;
+             sample_index = sample_index + 1) begin
+
+            @(posedge clk);
+
+             ADC_sample <= ADC_memory[sample_index];
+
+
+        end
+
+        #10000;
+        $stop;
+    end
+
+  always @(posedge clk) begin
+    if (!rst && en2 && data_valid_re) begin
+        #1;
+        $display("z_angle = %0d", $signed(z_angle));
+    end
+ end
+
+endmodule 
