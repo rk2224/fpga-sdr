@@ -254,17 +254,10 @@ The initial FIR implementation used many multipliers in parallel, resulting in h
 
 The filters were redesigned to reuse multipliers across multiple clock cycles, greatly reducing multiplier usage while maintaining real-time throughput.
 
-## Implementation
+## Future improvements
 
-The FPGA signal-processing pipeline was written in SystemVerilog.
-
-Major DSP blocks include:
-
-- Numerically controlled oscillator
-- Complex digital mixer
-- FIR filters
-- Multistage decimation
-- CORDIC-based FM demodulation
-- PWM audio generation
-
-The signal-processing blocks were implemented directly rather than using vendor DSP IP blocks.
+Possible future extensions to the receiver include:
+- Custom PCB implementation. Integrate the RF front end, ADC and supporting circuitry onto a PCB to reduce wiring, parasitics and interference compared with the current prototype.
+- Improved RF sensitivity. Optimise the antenna, impedance matching and analogue gain stages to improve reception of weaker stations.
+- Stereo FM decoding. Extend the DSP chain to recover the 19 kHz pilot and decode stereo left/right audio.
+- Improved audio output. Replace the PWM output stage with a higher-quality DAC or FPGA-based sigma-delta converter.
