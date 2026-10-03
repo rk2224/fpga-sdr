@@ -157,7 +157,9 @@ A second tunable NCO generates a complex exponential corresponding to the freque
 
 Changing the NCO phase increment therefore changes the tuned station while the analogue RF front end and 85 MHz local oscillator remain fixed.
 
-This allows tuning across the FM broadcast band entirely within the FPGA.
+The user tunes the receiver using a push button on the DE10-Lite, with each press changing the selected frequency by **100 kHz**. Switch `SW[9]` selects the tuning direction, while the currently selected frequency is displayed on the board's seven-segment displays.
+
+This allows tuning across the **87.5–108 MHz FM broadcast band** entirely within the FPGA.
 
 ### FIR filtering and decimation
 
