@@ -256,6 +256,7 @@ The filters were redesigned to reuse multipliers across multiple clock cycles, g
 
 ## Repository Structure
 
+```text
 FPGA-SDR/
 ├── coefficients/   # FIR coefficients and NCO sine-ROM lookup data (.mif)
 ├── images/         # Figures, photographs and plots used in this README
@@ -266,6 +267,7 @@ FPGA-SDR/
 ├── simulation/     # Questa testbenches and simulation files
 ├── LICENSE
 └── README.md
+```
 
 ## Future improvements
 
