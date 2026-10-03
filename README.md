@@ -254,6 +254,19 @@ The initial FIR implementation used many multipliers in parallel, resulting in h
 
 The filters were redesigned to reuse multipliers across multiple clock cycles, greatly reducing multiplier usage while maintaining real-time throughput.
 
+## Repository Structure
+
+FPGA-SDR/
+├── coefficients/   # FIR coefficients and NCO sine-ROM lookup data (.mif)
+├── images/         # Figures, photographs and plots used in this README
+├── matlab/         # Signal generation, analysis and plotting scripts
+├── measurements/   # Raw NanoVNA and ADC measurement data
+├── quartus/        # Quartus project files, pin assignments and timing constraints
+├── rtl/            # Synthesizable SystemVerilog RTL for the FPGA receiver
+├── simulation/     # Questa testbenches and simulation files
+├── LICENSE
+└── README.md
+
 ## Future improvements
 
 Possible future extensions to the receiver include:
